@@ -10,8 +10,9 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/MithunKBelale/practice-lab6.git'
+                git branch: 'main',
+                    url: 'https://github.com/MithunKBelale/practice-lab6.git',
+                    credentialsId: 'github-token'
             }
         }
 
@@ -35,8 +36,28 @@ pipeline {
 
         stage('Run Application') {
             steps {
-                sh 'java -jar target/*.jar &'
+                sh 'mvn exec:java -Dexec.mainClass="com.example.app.App"'
             }
+        }
+    }
+
+    
+    post {
+
+        success {
+            emailext (
+                subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build succeeded!\nCheck: ${BUILD_URL}",
+                to: "mithun.k.belale23@gmail.com"
+            )
+        }
+
+        failure {
+            emailext (
+                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Build failed!\nCheck: ${BUILD_URL}",
+                to: "mithun.k.belale23@gmail.com"
+            )
         }
     }
 }
