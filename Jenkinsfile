@@ -10,7 +10,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/MithunKBelale/practice-lab6.git'
+                git branch: 'master',
+                    url: 'https://github.com/MithunKBelale/practice-lab6.git'
             }
         }
 
@@ -29,6 +30,12 @@ pipeline {
         stage('Package') {
             steps {
                 sh 'mvn package'
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                sh 'java -jar target/*.jar &'
             }
         }
     }
